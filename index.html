@@ -441,7 +441,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    enableIndexedDbPersistence(db).catch((err) => { console.log("Persistence:", err.code); });
+    //enableIndexedDbPersistence(db).catch((err) => { console.log("Persistence:", err.code); });
 
     const { createApp } = Vue;
 
@@ -654,4 +654,5 @@
     }).mount('#app');
 </script>
 </body>
+
 </html>

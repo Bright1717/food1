@@ -84,7 +84,7 @@
                     <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold transform -rotate-12 shadow-lg">หมดค่ะ</span>
                 </div>
                 <div class="relative rounded-xl overflow-hidden mb-3 bg-gray-100 pointer-events-none">
-                    <img :src="item.image || 'https://via.placeholder.com/150?text=Menu'" class="img-crop transition duration-500 group-hover:scale-110" alt="Menu">
+                    <img :src="item.imageUrl || 'https://via.placeholder.com/150?text=Menu'" class="img-crop transition duration-500 group-hover:scale-110" alt="Menu">
                     <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 pt-6">
                         <p class="text-white font-bold text-lg drop-shadow-md">{{ item.price }}.-</p>
                     </div>
@@ -139,7 +139,7 @@
         <div class="bg-white w-full max-w-sm rounded-t-3xl sm:rounded-3xl shadow-2xl relative z-10 pointer-events-auto animate-slide-up flex flex-col max-h-[90vh]">
             
             <div class="p-5 pb-2 border-b border-gray-100 flex gap-4 items-center bg-orange-50 rounded-t-3xl">
-                <img :src="selectedItem.image || 'https://via.placeholder.com/150'" class="w-16 h-16 rounded-xl object-cover shadow-md border-2 border-white">
+                <img :src="selectedItem.imageUrl || 'https://via.placeholder.com/150'" class="w-16 h-16 rounded-xl object-cover shadow-md border-2 border-white">
                 <div class="flex-1">
                     <h3 class="text-xl font-black text-gray-800 leading-tight">{{ selectedItem.name }}</h3>
                     <p class="text-orange-600 font-bold">{{ selectedItem.price }}.-</p>
@@ -324,7 +324,7 @@
                  <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 mb-6">
                     <h3 class="font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-camera text-orange-500 mr-2"></i> เพิ่มเมนูใหม่</h3>
                     <div class="flex gap-4 mb-4">
-                        <label class="w-24 h-24 flex-shrink-0 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden hover:bg-gray-100 transition"><img v-if="newMenu.image" :src="newMenu.image" class="w-full h-full object-cover absolute inset-0"><div v-else class="text-center text-gray-400"><i class="fas fa-plus text-xl"></i><br><span class="text-[10px]">รูป</span></div><input type="file" id="fileInput" class="hidden" accept="image/*" @change="handleFile" required></label>
+                        <label class="w-24 h-24 flex-shrink-0 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden hover:bg-gray-100 transition"><img v-if="newMenu.imageUrl" :src="newMenu.imageUrl" class="w-full h-full object-cover absolute inset-0"><div v-else class="text-center text-gray-400"><i class="fas fa-plus text-xl"></i><br><span class="text-[10px]">รูป</span></div><input type="file" id="fileInput" class="hidden" accept="image/*" @change="handleFile" required></label>
                         <div class="flex-grow space-y-2">
                             <input v-model="newMenu.name" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-orange-500 font-bold" placeholder="ชื่อเมนู (เช่น กะเพรา)" required>
                             <input v-model.number="newMenu.price" type="number" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-orange-500 font-bold text-orange-600" placeholder="ราคาเริ่มต้น" required>
@@ -336,7 +336,7 @@
                 
                 <div class="space-y-2">
                     <div v-for="item in menuItems" :key="item.id" class="flex justify-between items-center bg-white p-2 rounded-xl border border-gray-200 cursor-pointer hover:border-orange-200 transition" @click="toggleStock(item, 'menu')">
-                        <div class="flex items-center gap-3"><img :src="item.image || 'https://via.placeholder.com/150'" class="w-12 h-12 rounded-lg object-cover bg-gray-100"><div><div :class="['font-bold', !item.available ? 'text-gray-400 line-through' : 'text-gray-800']">{{ item.name }}</div><div class="text-xs text-orange-600 font-bold">{{ item.price }}.-</div></div></div>
+                        <div class="flex items-center gap-3"><img :src="item.imageUrl || 'https://via.placeholder.com/150'" class="w-12 h-12 rounded-lg object-cover bg-gray-100"><div><div :class="['font-bold', !item.available ? 'text-gray-400 line-through' : 'text-gray-800']">{{ item.name }}</div><div class="text-xs text-orange-600 font-bold">{{ item.price }}.-</div></div></div>
                         <div class="flex items-center gap-3"><div :class="['w-10 h-6 rounded-full p-1 flex items-center transition-all', item.available ? 'bg-green-500 justify-end' : 'bg-gray-200 justify-start']"><div class="w-4 h-4 bg-white rounded-full shadow"></div></div><button @click.stop="deleteItem(item.id, 'menu')" class="text-gray-300 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button></div>
                     </div>
                 </div>
@@ -430,8 +430,8 @@
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp, setDoc, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
     // 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
-    // เอา  ที่ได้จากข้อ 1 มาใส่ตรงนี้ (Google Apps Script )
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby31ibXuGsODYKmqT64M9JsOir-CG0eL82j9HX76_NxRShoKsUbbGv-jvaVwSlWBdxh7A/exec'; 
+    // เอา URL ที่ได้จากข้อ 1 มาใส่ตรงนี้ (Google Apps Script URL)
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLcLL3fllJyti033OJpCqAt2vbKi4a0udgai6iIK1C5jrSX_9PgbZhbehJ9aH0VH5Nyg/exec'; 
     // 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
 
     const firebaseConfig = {
@@ -715,6 +715,3 @@
 </script>
 </body>
 </html>
-
-
-
